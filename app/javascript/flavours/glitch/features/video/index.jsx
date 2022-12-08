@@ -548,8 +548,17 @@ class Video extends PureComponent {
 
     const playerStyle = {};
 
-    if (inline) {
-      playerStyle.aspectRatio = '16 / 9';
+    const computedClass = classNames('video-player', { inactive: !revealed, detailed, inline: inline && !fullscreen, fullscreen, editable, letterbox, 'full-width': fullwidth });
+
+    let { width, height } = this.props;
+
+    if (inline && containerWidth) {
+      width  = containerWidth;
+      height = containerWidth / (16/9);
+
+      playerStyle.height = height;
+    } else if (inline) {
+      return (<div className={computedClass} ref={this.setPlayerRef} tabindex={0} />);
     }
 
     let preload;

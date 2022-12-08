@@ -8,7 +8,11 @@ import { createBrowserHistory } from 'history';
 
 import { WithOptionalRouterPropTypes, withOptionalRouter } from 'flavours/glitch/utils/react_router';
 
-class ModalRoot extends PureComponent {
+export class ModalRoot extends React.PureComponent {
+
+  static contextTypes = {
+    router: PropTypes.object,
+  };
 
   static propTypes = {
     children: PropTypes.node,

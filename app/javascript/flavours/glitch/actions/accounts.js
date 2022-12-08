@@ -692,8 +692,78 @@ export const navigateToProfile = (accountId) => {
   return (_dispatch, getState) => {
     const acct = getState().accounts.getIn([accountId, 'acct']);
 
-    if (acct) {
-      browserHistory.push(`/@${acct}`);
-    }
+export function fetchPinnedAccounts() {
+  return (dispatch, getState) => {
+    dispatch(fetchPinnedAccountsRequest());
+
+    api(getState).get('/api/v1/endorsements', { params: { limit: 0 } }).then(response => {
+      dispatch(importFetchedAccounts(response.data));
+      dispatch(fetchPinnedAccountsSuccess(response.data));
+    }).catch(err => dispatch(fetchPinnedAccountsFail(err)));
   };
 };
+
+export function fetchPinnedAccountsRequest() {
+  return {
+    type: PINNED_ACCOUNTS_FETCH_REQUEST,
+  };
+};
+
+export function fetchPinnedAccountsSuccess(accounts, next) {
+  return {
+    type: PINNED_ACCOUNTS_FETCH_SUCCESS,
+    accounts,
+    next,
+  };
+};
+
+export function fetchPinnedAccountsFail(error) {
+  return {
+    type: PINNED_ACCOUNTS_FETCH_FAIL,
+    error,
+  };
+};
+
+export function fetchPinnedAccountsSuggestions(q) {
+  return (dispatch, getState) => {
+    const params = {
+      q,
+      resolve: false,
+      limit: 4,
+      following: true,
+    };
+
+    api(getState).get('/api/v1/accounts/search', { params }).then(response => {
+      dispatch(importFetchedAccounts(response.data));
+      dispatch(fetchPinnedAccountsSuggestionsReady(q, response.data));
+    });
+  };
+};
+
+export function fetchPinnedAccountsSuggestionsReady(query, accounts) {
+  return {
+    type: PINNED_ACCOUNTS_EDITOR_SUGGESTIONS_READY,
+    query,
+    accounts,
+  };
+};
+
+export function clearPinnedAccountsSuggestions() {
+  return {
+    type: PINNED_ACCOUNTS_EDITOR_SUGGESTIONS_CLEAR,
+  };
+};
+
+export function changePinnedAccountsSuggestions(value) {
+  return {
+    type: PINNED_ACCOUNTS_EDITOR_SUGGESTIONS_CHANGE,
+    value,
+  };
+};
+
+export function resetPinnedAccountsEditor() {
+  return {
+    type: PINNED_ACCOUNTS_EDITOR_RESET,
+  };
+};
+

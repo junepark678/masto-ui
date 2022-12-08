@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import classNames from 'classnames';
 
 import classNames from 'classnames';
 

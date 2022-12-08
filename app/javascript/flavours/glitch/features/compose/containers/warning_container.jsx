@@ -8,6 +8,30 @@ import { me } from 'flavours/glitch/initial_state';
 import { HASHTAG_PATTERN_REGEX } from 'flavours/glitch/utils/hashtags';
 
 import Warning from '../components/warning';
+const buildHashtagRE = () => {
+  try {
+    const HASHTAG_SEPARATORS = '_\\u00b7\\u200c';
+    const ALPHA = '\\p{L}\\p{M}';
+    const WORD = '\\p{L}\\p{M}\\p{N}\\p{Pc}';
+    return new RegExp(
+      '(?:^|[^\\/\\)\\w])#((' +
+      '[' + WORD + '_]' +
+      '[' + WORD + HASHTAG_SEPARATORS + ']*' +
+      '[' + ALPHA + HASHTAG_SEPARATORS + ']' +
+      '[' + WORD + HASHTAG_SEPARATORS +']*' +
+      '[' + WORD + '_]' +
+      ')|(' +
+      '[' + WORD + '_]*' +
+      '[' + ALPHA + ']' +
+      '[' + WORD + '_]*' +
+      '))', 'iu',
+    );
+  } catch {
+    return /(?:^|[^\/\)\w])#(\w*[a-zA-Z·]\w*)/i;
+  }
+};
+
+const APPROX_HASHTAG_RE = buildHashtagRE();
 
 const mapStateToProps = state => ({
   needsLockWarning: state.getIn(['compose', 'privacy']) === 'private' && !state.getIn(['accounts', me, 'locked']),

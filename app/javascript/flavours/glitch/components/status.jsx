@@ -372,8 +372,27 @@ class Status extends ImmutablePureComponent {
     const { isCollapsed } = this.state;
     if (!history) return;
 
-    if (e.button !== 0 || e.ctrlKey || e.altKey || e.metaKey) {
-      return;
+    if (e.button === 0 && !(e.ctrlKey || e.altKey || e.metaKey)) {
+      if (isCollapsed) this.setCollapsed(false);
+      else if (e.shiftKey) {
+        this.setCollapsed(true);
+        document.getSelection().removeAllRanges();
+      } else if (this.props.onClick) {
+        this.props.onClick();
+        return;
+      } else {
+        if (destination === undefined) {
+          destination = `/@${
+            status.getIn(['reblog', 'account', 'acct'], status.getIn(['account', 'acct']))
+          }/${
+            status.getIn(['reblog', 'id'], status.get('id'))
+          }`;
+        }
+        let state = { ...router.history.location.state };
+        state.mastodonBackSteps = (state.mastodonBackSteps || 0) + 1;
+        router.history.push(destination, state);
+      }
+      e.preventDefault();
     }
 
     if (isCollapsed) this.setCollapsed(false);
@@ -466,13 +485,17 @@ class Status extends ImmutablePureComponent {
   };
 
   handleHotkeyOpen = () => {
+    let state = { ...this.context.router.history.location.state };
+    state.mastodonBackSteps = (state.mastodonBackSteps || 0) + 1;
     const status = this.props.status;
     this.props.history.push(`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`);
   };
 
   handleHotkeyOpenProfile = () => {
-    this.props.history.push(`/@${this.props.status.getIn(['account', 'acct'])}`);
-  };
+    let state = { ...this.context.router.history.location.state };
+    state.mastodonBackSteps = (state.mastodonBackSteps || 0) + 1;
+    this.context.router.history.push(`/@${this.props.status.getIn(['account', 'acct'])}`, state);
+  }
 
   handleHotkeyMoveUp = e => {
     this.props.onMoveUp(this.props.containerId || this.props.id, e.target.getAttribute('data-featured'));

@@ -34,6 +34,7 @@ export const loadPending = timeline => ({
 });
 
 export function updateTimeline(timeline, status, accept) {
+  console.log("UPDATE", timeline, status);
   return (dispatch, getState) => {
     if (typeof accept === 'function' && !accept(status)) {
       return;
