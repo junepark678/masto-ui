@@ -85,9 +85,9 @@ class PublicTimeline extends PureComponent {
     const { dispatch, onlyMedia, onlyRemote, allowLocalOnly } = this.props;
     const { signedIn } = this.props.identity;
 
-    dispatch(expandPublicTimeline({ onlyMedia, onlyRemote, allowLocalOnly }));
+    dispatch(expandPublicTimeline({ onlyMedia, onlyRemote }));
     if (signedIn) {
-      this.disconnect = dispatch(connectPublicStream({ onlyMedia, onlyRemote, allowLocalOnly }));
+      this.disconnect = dispatch(connectPublicStream({ onlyMedia, onlyRemote  }));
     }
   }
 
@@ -95,16 +95,16 @@ class PublicTimeline extends PureComponent {
     const { signedIn } = this.props.identity;
 
     if (prevProps.onlyMedia !== this.props.onlyMedia || prevProps.onlyRemote !== this.props.onlyRemote || prevProps.allowLocalOnly !== this.props.allowLocalOnly) {
-      const { dispatch, onlyMedia, onlyRemote, allowLocalOnly } = this.props;
+      const { dispatch, onlyMedia, onlyRemote } = this.props;
 
       if (this.disconnect) {
         this.disconnect();
       }
 
-      dispatch(expandPublicTimeline({ onlyMedia, onlyRemote, allowLocalOnly }));
+      dispatch(expandPublicTimeline({ onlyMedia, onlyRemote }));
 
       if (signedIn) {
-        this.disconnect = dispatch(connectPublicStream({ onlyMedia, onlyRemote, allowLocalOnly }));
+        this.disconnect = dispatch(connectPublicStream({ onlyMedia, onlyRemote }));
       }
     }
   }
@@ -121,9 +121,9 @@ class PublicTimeline extends PureComponent {
   };
 
   handleLoadMore = maxId => {
-    const { dispatch, onlyMedia, onlyRemote, allowLocalOnly } = this.props;
+    const { dispatch, onlyMedia, onlyRemote } = this.props;
 
-    dispatch(expandPublicTimeline({ maxId, onlyMedia, onlyRemote, allowLocalOnly }));
+    dispatch(expandPublicTimeline({ maxId, onlyMedia, onlyRemote }));
   };
 
   render () {
