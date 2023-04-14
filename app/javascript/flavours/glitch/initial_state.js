@@ -140,6 +140,7 @@ export const sso_redirect = getMeta('sso_redirect');
 
 // Glitch-soc-specific settings
 export const maxFeedHashtags = (initialState && initialState.max_feed_hashtags) || 4;
+export const maxChars = (initialState && initialState.char_limit) || 500;
 export const favouriteModal = getMeta('favourite_modal');
 export const pollLimits = (initialState && initialState.poll_limits);
 export const defaultContentType = getMeta('default_content_type');
